@@ -129,7 +129,7 @@ export class LoginComponent implements OnInit {
         this.authService.saveSession({ token, username });
         this.router.navigate(['/']);
       } else if (error) {
-        this.errorMessage.set('Google sign-in failed. Please ensure you have an account or try again.');
+        this.errorMessage.set(decodeURIComponent(error));
       }
     });
   }

@@ -20,12 +20,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oauth2User = super.loadUser(userRequest);
-        
+
         String googleId = oauth2User.getAttribute("sub");
         String email = oauth2User.getAttribute("email");
 
-        Optional<User> userOptional = userRepository.findByGoogleId(googleId);
-        if (userOptional.isEmpty()) {
+        Optional<User> userByUsername = userRepository.findByUsername(email);
+
+        if (userByUsername.isPresent()) {
+            User existingUser = userByUsername.get();
+            // If the user exists but has no googleId, it's a manual account
+            if (existingUser.getGoogleId() == null) {
+                throw new OAuth2AuthenticationException("An account already exists with this email. Please log in manually.");
+            }
+            // If googleId is different, update it (handles potential ID changes)
+            if (!googleId.equals(existingUser.getGoogleId())) {
+                 existingUser.setGoogleId(googleId);
+                 userRepository.save(existingUser);
+            }
+        } else {
+            // New user - strictly Google registration
             User user = User.builder()
                     .googleId(googleId)
                     .username(email)
@@ -35,4 +48,5 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         return oauth2User;
     }
+
 }
