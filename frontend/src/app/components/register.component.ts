@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-register',
@@ -213,5 +214,8 @@ export class RegisterComponent {
   closeSuccessModal() {
     this.showSuccessModal.set(false);
     this.router.navigate(['/login']);
+  }
+}
+vigate(['/login']);
   }
 }
