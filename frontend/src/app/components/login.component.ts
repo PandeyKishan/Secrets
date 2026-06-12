@@ -110,6 +110,7 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent implements OnInit {
   credentials = { username: '', password: '' };
   errorMessage = signal<string | null>(null);
+  googleAuthUrl = `${environment.apiUrl.replace('/api', '')}/oauth2/authorization/google`;
 
   constructor(
     private authService: AuthService, 
