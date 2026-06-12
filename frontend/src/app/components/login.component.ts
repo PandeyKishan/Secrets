@@ -129,11 +129,15 @@ export class LoginComponent implements OnInit {
       if (token && username) {
         this.authService.saveSession({ token, username });
         this.router.navigate(['/']);
-      } else if (error) {
-        const decodedError = decodeURIComponent(error);
+      } else if (error !== undefined) {
+        // If error param exists (even if empty string)
+        const decodedError = error ? decodeURIComponent(error) : 'Google sign-in failed. Please try again.';
         this.errorMessage.set(decodedError);
-        if (decodedError.includes('already exists')) {
+        
+        if (decodedError.includes('already exists') || decodedError.toLowerCase().includes('conflict')) {
           this.errorTitle.set('Account Conflict');
+        } else {
+          this.errorTitle.set('Login Failed');
         }
       }
     });
