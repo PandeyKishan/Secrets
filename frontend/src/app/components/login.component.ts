@@ -51,11 +51,11 @@ import { environment } from '../../environments/environment';
     @if (errorMessage()) {
       <div class="modal-overlay">
         <div class="modal-card shadow-lg animate-pop">
-          <i class="fas fa-exclamation-circle fa-4x text-danger mb-4"></i>
-          <h2 class="mb-3">Login Failed</h2>
+          <i [class]="errorTitle() === 'Account Conflict' ? 'fas fa-user-shield fa-4x text-warning mb-4' : 'fas fa-exclamation-circle fa-4x text-danger mb-4'"></i>
+          <h2 class="mb-3">{{ errorTitle() }}</h2>
           <p class="lead mb-4">{{ errorMessage() }}</p>
           <button class="btn btn-dark btn-lg px-5 rounded-pill" (click)="errorMessage.set(null)">
-            Try Again
+            {{ errorTitle() === 'Account Conflict' ? 'Got it' : 'Try Again' }}
           </button>
         </div>
       </div>
@@ -111,6 +111,7 @@ import { environment } from '../../environments/environment';
 export class LoginComponent implements OnInit {
   credentials = { username: '', password: '' };
   errorMessage = signal<string | null>(null);
+  errorTitle = signal<string>('Login Failed');
   googleAuthUrl = `${environment.apiUrl.replace('/api', '')}/oauth2/authorization/google`;
 
   constructor(
@@ -129,7 +130,11 @@ export class LoginComponent implements OnInit {
         this.authService.saveSession({ token, username });
         this.router.navigate(['/']);
       } else if (error) {
-        this.errorMessage.set(decodeURIComponent(error));
+        const decodedError = decodeURIComponent(error);
+        this.errorMessage.set(decodedError);
+        if (decodedError.includes('already exists')) {
+          this.errorTitle.set('Account Conflict');
+        }
       }
     });
   }
