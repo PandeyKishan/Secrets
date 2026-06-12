@@ -83,10 +83,13 @@ public class WebSecurityConfig {
     return http.build();
   }
 
+  @org.springframework.beans.factory.annotation.Value("${app.frontend.url}")
+  private String frontendUrl;
+
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", frontendUrl));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
     configuration.setAllowCredentials(true);

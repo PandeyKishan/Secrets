@@ -19,14 +19,17 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Autowired
     private JwtUtils jwtUtils;
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.url}")
+    private String frontendUrl;
+
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {     
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
-        
+
         String token = jwtUtils.generateTokenFromUsername(email);
-        
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:4200/login")
+
+        String targetUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/login")
                 .queryParam("token", token)
                 .queryParam("username", email)
                 .build().toUriString();
@@ -34,3 +37,4 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }
+
