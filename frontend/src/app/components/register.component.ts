@@ -29,7 +29,7 @@ import { environment } from '../../environments/environment';
                     <label for="password">Password</label>
                   </div>
                   <button type="submit" class="btn btn-dark btn-lg w-100 py-3 mb-3">Register</button>
-                  <a class="btn btn-outline-google w-100 py-3 border" href="http://localhost:8080/oauth2/authorization/google" role="button">
+                  <a class="btn btn-outline-google w-100 py-3 border" [href]="googleAuthUrl" role="button">
                     <i class="fab fa-google me-2"></i> Sign Up with Google
                   </a>
                 </form>
@@ -161,6 +161,7 @@ export class RegisterComponent {
   showSuccessModal = signal(false);
   showOtpModal = signal(false);
   resendDisabled = signal(false);
+  googleAuthUrl = `${environment.apiUrl.replace('/api', '')}/oauth2/authorization/google`;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -214,8 +215,5 @@ export class RegisterComponent {
   closeSuccessModal() {
     this.showSuccessModal.set(false);
     this.router.navigate(['/login']);
-  }
-}
-vigate(['/login']);
   }
 }
