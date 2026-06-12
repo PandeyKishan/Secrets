@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,7 @@ import { CommonModule } from '@angular/common';
                     <label for="password">Password</label>
                   </div>
                   <button type="submit" class="btn btn-dark btn-lg w-100 py-3 mb-3">Login</button>
-                  <a class="btn btn-outline-google w-100 py-3 border" href="http://localhost:8080/oauth2/authorization/google" role="button">
+                  <a class="btn btn-outline-google w-100 py-3 border" [href]="googleAuthUrl" role="button">
                     <i class="fab fa-google me-2"></i> Sign In with Google
                   </a>
                 </form>
