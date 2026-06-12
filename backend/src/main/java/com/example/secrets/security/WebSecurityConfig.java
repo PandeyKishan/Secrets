@@ -2,6 +2,7 @@ package com.example.secrets.security;
 
 import com.example.secrets.security.jwt.AuthTokenFilter;
 import com.example.secrets.security.services.CustomOAuth2UserService;
+import com.example.secrets.security.services.OAuth2AuthenticationFailureHandler;
 import com.example.secrets.security.services.OAuth2AuthenticationSuccessHandler;
 import com.example.secrets.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
