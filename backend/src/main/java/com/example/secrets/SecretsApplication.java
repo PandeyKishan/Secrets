@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.File;
 
 @SpringBootApplication
+@org.springframework.scheduling.annotation.EnableAsync
 public class SecretsApplication {
 
 	public static void main(String[] args) {
