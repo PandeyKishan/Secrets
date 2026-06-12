@@ -58,13 +58,15 @@ Secrets is a modern, full-stack web application designed for users to share thei
 
 ---
 
-## 🛠️ Architecture
+## 🛠️ Architecture & Documentation
 
-The project follows a clean **Monorepo** structure:
+Explore the detailed specifications of the **Secrets** platform:
 
-- `backend/`: Spring Boot REST API.
-- `frontend/`: Angular SPA.
-- `legacy/`: Original Node.js source code (Reference).
+- 📖 **[TECHSPEC.MD](./TECHSPEC.MD)**: Technical deep-dive into the stack and security.
+- 🎨 **[DESIGN.MD](./DESIGN.MD)**: UI/UX principles and visual blueprints.
+- 📊 **[SCHEMA.MD](./SCHEMA.MD)**: Database entity relationships and data flow.
+- 🌊 **[APPFLOW.MD](./APPFLOW.MD)**: User journey and application state mapping.
+- 📄 **[PRD.MD](./PRD.MD)**: Product requirements, vision, and roadmap.
 
 ---
 
