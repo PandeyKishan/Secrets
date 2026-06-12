@@ -1,53 +1,79 @@
 # 🛠️ Technical Specification
 
-This document details the technology stack and architectural decisions for the **Secrets** project.
+Explore the engine behind **Secrets**. This document outlines our modern, scalable, and secure architecture.
 
-## 🏗️ Backend Stack
+---
 
-- **Language:** Java 21 (LTS)
-- **Framework:** Spring Boot 3.3.0
-- **Security:** Spring Security (Stateless JWT, OAuth2)
-- **Database:** MongoDB (using Spring Data MongoDB)
-- **Messaging:** Java Mail Sender (for OTP verification)
-- **Build Tool:** Maven
-- **Core Dependencies:**
-  - `spring-boot-starter-web`: For RESTful APIs.
-  - `spring-boot-starter-security`: For Auth/Authorization.
-  - `jjwt`: For JSON Web Token implementation.
-  - `lombok`: To reduce boilerplate code.
+## 🏗️ System Architecture
 
-## 🎨 Frontend Stack
+```mermaid
+graph TD
+    subgraph "Frontend (Angular 18)"
+        A[App Components] --> B[Auth Interceptor]
+        B --> C[HttpClient]
+    end
 
-- **Framework:** Angular 18 (Standalone Components)
-- **Language:** TypeScript
-- **State Management:** RxJS (Observables/Subjects)
-- **Styling:** 
-  - Bootstrap 5 (Responsive Layouts)
-  - FontAwesome 5 (Iconography)
-  - Bootstrap-Social (OAuth UI components)
-- **Routing:** Angular Router with Auth Guards.
-- **HTTP Client:** Angular HttpClient with Auth Interceptors for JWT attachment.
+    subgraph "Backend (Spring Boot 3.3)"
+        C -- "REST API (JSON + JWT)" --> D[Security Filter Chain]
+        D --> E[REST Controllers]
+        E --> F[Service Layer]
+        F --> G[Repositories]
+    end
 
-## 💾 Database & Storage
+    subgraph "External"
+        G --> H[(MongoDB)]
+        F --> I[Java Mail Sender]
+        D --> J[Google OAuth2]
+    end
 
-- **Database:** MongoDB
-- **Pattern:** Document-based storage.
-- **Schema Strategy:** Embedded secrets within the User document for high-read performance and simplified relationships.
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style E fill:#bbf,stroke:#333,stroke-width:2px
+    style H fill:#bfb,stroke:#333,stroke-width:2px
+```
 
-## 🔐 Authentication Flow
+---
 
-1. **Local Auth:** 
-   - User registers with Email/OTP.
-   - Login generates a JWT signed with a secret key.
-   - JWT is stored in the browser's LocalStorage.
-2. **Social Auth:** 
-   - Google OAuth2 flow handled by Spring Security.
-   - Successful redirection provides a JWT to the frontend.
-3. **Authorization:** 
-   - All protected endpoints require a `Bearer <JWT>` token in the `Authorization` header.
+## 💻 Tech Stack Breakdown
 
-## 🚀 Deployment & DevOps
+### **Frontend: The User Experience**
+| Technology | Badge | Purpose |
+| :--- | :--- | :--- |
+| **Angular 18** | ![Angular](https://img.shields.io/badge/Angular-DD0031?style=flat-square&logo=angular&logoColor=white) | Standalone components & modular architecture. |
+| **TypeScript** | ![TS](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) | Type-safe development. |
+| **RxJS** | ![RxJS](https://img.shields.io/badge/RxJS-B7178C?style=flat-square&logo=reactivex&logoColor=white) | Reactive state management. |
+| **Bootstrap 5** | ![BS](https://img.shields.io/badge/Bootstrap-7952B3?style=flat-square&logo=bootstrap&logoColor=white) | Responsive design & layout. |
 
-- **Version Control:** Git
-- **Configuration:** Environment variables for sensitive secrets (Google Client ID/Secret).
-- **Environment:** Compatible with Docker and standard cloud providers (Heroku, AWS, DigitalOcean).
+### **Backend: The Logic Engine**
+| Technology | Badge | Purpose |
+| :--- | :--- | :--- |
+| **Java 21** | ![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white) | Latest LTS performance features. |
+| **Spring Boot 3** | ![Spring](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white) | Production-ready microservice foundation. |
+| **Spring Security** | ![Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=flat-square&logo=spring-security&logoColor=white) | JWT & OAuth2 orchestration. |
+| **MongoDB** | ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white) | Flexible NoSQL document storage. |
+
+---
+
+## 🔐 Authentication Data Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant Google
+
+    User->>Frontend: Clicks "Login with Google"
+    Frontend->>Backend: Redirects to /oauth2/authorization/google
+    Backend->>Google: Authorization Request
+    Google-->>Backend: Auth Code
+    Backend->>Google: Exchange Code for Token
+    Backend-->>Frontend: Redirect with JWT in URL
+    Frontend->>Frontend: Store JWT in LocalStorage
+```
+
+---
+
+## 🚀 Key Performance Highlights
+- **Statelessness:** No server-side sessions; perfect for horizontal scaling.
+- **Async Processing:** OTP emails are sent asynchronously to ensure fast UI response.
+- **Type Safety:** Shared DTO structures ensure consistency between Java and TypeScript.

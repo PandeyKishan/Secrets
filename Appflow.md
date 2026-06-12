@@ -1,40 +1,66 @@
 # 🌊 Application Flow & User Journey
 
-This document maps the user journey through the **Secrets** application.
+Follow the path of a secret keeper through our intuitive, secure ecosystem.
 
-## 🛣️ User Journey
+---
 
-### 1. Discovery (Guest)
-- **Land on Home Page:** User sees the "Secrets" branding and the core value proposition.
-- **View Public Secrets:** Users can browse secrets without logging in to see the community's vibe.
+## 🛤️ The User Lifecycle
 
-### 2. Onboarding (New User)
-- **Register:** User enters email and password.
-- **OTP Verification:** User receives a code via email and enters it to verify their identity.
-- **Redirect:** Automatically redirected to the Dashboard/Secrets page upon success.
+```mermaid
+stateDiagram-v2
+    [*] --> Guest
+    Guest --> Register : Signup
+    Register --> OTP_Verification : Email Sent
+    OTP_Verification --> Dashboard : Success
+    
+    Guest --> Login : Sign In
+    Login --> Dashboard : Success
+    
+    Dashboard --> SubmitSecret : Share Thought
+    SubmitSecret --> Dashboard : Post Success
+    
+    Dashboard --> Logout : Sign Out
+    Logout --> Guest
+```
 
-### 3. Authentication (Returning User)
-- **Login:** Enter credentials or use **Google One-Tap/Sign-In**.
-- **JWT Issuance:** App receives a token and stores it in LocalStorage.
+---
 
-### 4. Contribution (Member)
-- **Navigate to Submit:** User goes to the `/submit` page.
-- **Write Secret:** User types their secret into the text area.
-- **Submit:** Data is sent to the backend, validated, and saved to the user's document.
-- **View:** User is redirected to see their new secret among others.
+## 📱 Interactive Screen Mapping
 
-## 🖥️ Screen Map
-
-| Route | Component | Access | Description |
+### **Phase 1: The Gatekeeper**
+| Screen | Route | Visual | Purpose |
 | :--- | :--- | :--- | :--- |
-| `/` | `HomeComponent` | Public | The landing page. |
-| `/login` | `LoginComponent` | Guest Only | Local and Social login options. |
-| `/register` | `RegisterComponent` | Guest Only | Sign up form with OTP steps. |
-| `/secrets` | `SecretsComponent` | Private | The main feed of anonymous secrets. |
-| `/submit` | `SubmitComponent` | Private | Form to share a new secret. |
-| `/profile` | `ProfileComponent` | Private | User account details and personal secrets. |
+| **Landing** | `/` | 🏠 | Welcome & Value Prop |
+| **Auth** | `/login` | 🔑 | Entry to the platform |
+| **Signup** | `/register`| 📝 | Community Onboarding |
 
-## 🛡️ Guard Logic
+### **Phase 2: The Inner Circle**
+| Screen | Route | Visual | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Feed** | `/secrets` | 🕵️ | The Anonymous Wall |
+| **Editor** | `/submit` | ✍️ | Ghost-writing your secret |
+| **Account** | `/profile` | 👤 | Managing your presence |
 
-- **Auth Guard:** Prevents unauthenticated users from accessing `/secrets`, `/submit`, and `/profile`.
-- **Guest Guard:** Prevents logged-in users from going back to `/login` or `/register`.
+---
+
+## 🔒 Security Gateways (Guards)
+
+We use Angular **Functional Guards** to protect our ecosystem:
+
+```mermaid
+graph TD
+    A[User attempts /submit] --> B{Is Authenticated?}
+    B -- Yes --> C[Access Granted]
+    B -- No --> D[Redirect to /login]
+    
+    E[Logged-in User attempts /login] --> F{Is Guest?}
+    F -- No --> G[Redirect to /secrets]
+    F -- Yes --> H[Access Granted]
+```
+
+---
+
+## ⚡ Real-time Transitions
+- **Auth Interceptors:** Every request automatically attaches the `Bearer Token` without developer overhead.
+- **Route Resolvers:** Ensuring data is fetched *before* the component renders, preventing "layout shift."
+- **Animated Routes:** Smooth slide transitions between the Feed and the Editor screens.

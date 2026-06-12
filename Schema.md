@@ -1,38 +1,75 @@
 # 📊 Database Schema
 
-Secrets uses **MongoDB**, a NoSQL document database, which allows for a flexible and performant schema design.
+Our database architecture is designed for high speed and low latency, utilizing MongoDB's document-oriented structure.
 
-## 📁 Collections
+---
 
-### 1. `users`
-Stores user profile information, authentication credentials, and their submitted secrets.
+## 🗺️ Entity Relationship (ER) Diagram
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `_id` | ObjectId | Unique identifier for the user. |
-| `username` | String | User's email address (used for local login). |
-| `password` | String | BCrypt hashed password. |
-| `googleId` | String | Optional ID provided by Google OAuth. |
-| `secret` | Array<String> | An array of secrets submitted by this user. |
+```mermaid
+erDiagram
+    USER ||--o{ SECRET : "owns (embedded)"
+    USER {
+        string id PK
+        string username "Email"
+        string password "Hashed"
+        string googleId "Optional"
+        string[] secret "Embedded Array"
+    }
+    
+    OTP_TOKEN {
+        string id PK
+        string email
+        string otp
+        datetime expiryDate
+    }
+    
+    USER ||--o| OTP_TOKEN : "verifies with"
+```
 
-### 2. `otp_tokens`
-Temporary storage for One-Time Passwords used during registration/verification.
+---
 
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `_id` | ObjectId | Unique identifier. |
-| `email` | String | The email address receiving the OTP. |
-| `otp` | String | The generated 6-digit (or similar) code. |
-| `expiryDate` | ISODate | Timestamp when the token becomes invalid. |
+## 📁 Collection Deep-Dive
 
-## 🔗 Relationships
+### **1. Users Collection**
+> Stores user profiles and their collection of secrets.
 
-- **User-to-Secrets:** This is a **One-to-Many** relationship. In this implementation, we use **Embedding**.
-  - *Why?* Secrets are generally short strings and directly tied to the user's "voice". Embedding them simplifies queries and ensures all user data is retrieved in a single read operation.
-- **User-to-OTP:** This is a **One-to-One** (transient) relationship. The `email` field acts as the link between the registration intent and the token.
+| Field | Type | Visual | Description |
+| :--- | :--- | :--- | :--- |
+| `_id` | `ObjectId` | 🆔 | Unique Primary Key |
+| `username` | `String` | 📧 | User's unique email |
+| `password` | `String` | 🔒 | BCrypt Hashed String |
+| `googleId` | `String` | 🌐 | Google SSO Identifier |
+| `secret` | `Array<String>` | 📝 | Embedded Secret Strings |
 
-## 🛠️ Data Integrity & Security
+### **2. OTP Tokens Collection**
+> Transient storage for security challenges.
 
-- **Password Hashing:** All passwords are encrypted using `BCrypt`.
-- **Statelessness:** No session data is stored in the database; authentication is handled via JWTs issued upon valid login/registration.
-- **Indexing:** The `username` field in the `users` collection is indexed for fast lookup during login.
+| Field | Type | Visual | Description |
+| :--- | :--- | :--- | :--- |
+| `_id` | `ObjectId` | 🆔 | Unique Identifier |
+| `email` | `String` | 📧 | Recipient Address |
+| `otp` | `String` | 🔢 | 6-digit verification code |
+| `expiryDate` | `Date` | ⏳ | Automatic expiration time |
+
+---
+
+## 🛠️ Data Architecture Decisions
+
+### **Why Embedding Secrets?**
+Instead of a separate `secrets` collection, we embed secrets directly in the `User` document.
+
+1.  **Read Speed:** One query retrieves the user AND all their secrets.
+2.  **Simplicity:** No complex `$lookup` or joins required.
+3.  **Performance:** Since secrets are just text strings, document size remains manageable.
+
+### **The Flow of Data**
+```mermaid
+graph LR
+    A[Client Request] --> B{JWT Valid?}
+    B -- Yes --> C[Query MongoDB]
+    C --> D[Retrieve User Document]
+    D --> E[Extract 'secret' Array]
+    E --> F[Return JSON to UI]
+    B -- No --> G[401 Unauthorized]
+```

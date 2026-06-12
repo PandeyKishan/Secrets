@@ -1,40 +1,65 @@
 # 📄 Product Requirement Document (PRD)
 
-## 🎯 Project Overview
-**Secrets** is a platform dedicated to anonymous self-expression. It provides a safe, digital space where users can confess, share, and offload their secrets without the fear of social repercussions.
+Building a safe harbor for the unspoken.
 
-## ⚠️ Problem Statement
-In a world of hyper-connectivity and social media "perfection," people often feel pressured to hide their true thoughts, mistakes, or unconventional experiences. Traditional social networks are tied to identities, making it difficult to be truly vulnerable.
+---
 
-## 💡 Solution
-A minimalist web application that decouples the identity of the user from the content of the message at the UI level, while maintaining a secure and verified account system at the backend level.
+## 🚀 The Vision
+> **To provide a zero-judgment zone where vulnerability is celebrated through anonymity.**
 
-## 👥 Target Audience
-- **The Stressed:** Individuals looking for a cathartic release by "getting it off their chest."
-- **The Curious:** People who enjoy reading the raw, unfiltered experiences of others.
-- **Privacy Enthusiasts:** Users who value secure, anonymous interactions.
+---
 
-## ✨ Core Features
+## 🎯 Strategic Pillars
 
-### 1. Account Management
-- **Secure Sign-Up:** Email-based registration with OTP (One-Time Password) to prevent bot spam.
-- **Social Integration:** Google OAuth2 for a frictionless login experience.
-- **JWT Auth:** Industry-standard stateless authentication.
+| Pillar | Icon | Description |
+| :--- | :--- | :--- |
+| **Privacy** | 🛡️ | Your identity is never linked to your public words. |
+| **Simplicity** | ✨ | Zero distractions. Just you and the secret. |
+| **Security** | 🔒 | Bank-grade hashing and OAuth2 protection. |
+| **Catharsis** | 🌊 | The relief of sharing what's been hidden. |
 
-### 2. Secret Submission
-- **Simple Interface:** A single, large text field for maximum focus.
-- **Persistence:** Secrets are tied to accounts but displayed anonymously.
+---
 
-### 3. The "Feed"
-- **Global Secrets:** A collective wall of secrets from all users.
-- **Anonymity First:** No usernames, timestamps, or profile links on the public feed.
+## 📋 Core Feature Matrix
 
-## 📈 Success Metrics
-- **Engagement:** Number of secrets shared per user.
-- **Retention:** Monthly active users returning to read or post.
-- **Security:** Zero data leaks or unauthorized access incidents.
+### **1. Identity & Access**
+- [x] **OTP Verification:** Kill the bots, keep the humans.
+- [x] **Google SSO:** One-click entry to anonymity.
+- [x] **JWT Security:** Persistent sessions without server storage.
 
-## 🗺️ Roadmap
-- **V2:** Add "Like" or "Hug" reactions to secrets.
-- **V2:** Category tags (e.g., #Work, #Love, #Confession).
-- **V3:** End-to-end encryption for secret storage.
+### **2. The Secret Engine**
+- [x] **Anonymous Posting:** No names, just thoughts.
+- [x] **Rich Text Area:** A canvas for your confessions.
+- [x] **Global Feed:** See the world's secrets in real-time.
+
+---
+
+## 🛠️ User Personas
+
+```mermaid
+graph LR
+    A((User Persona)) --- B(The Confessor)
+    A --- C(The Observer)
+    A --- D(The Transient)
+    
+    B --> B1[Wants to release a burden]
+    C --> C1[Wants to feel connected]
+    D --> D1[Wants a quick, frictionless app]
+```
+
+---
+
+## 📈 Roadmap to V2
+
+### **Short-Term (Q3 2026)**
+- 🎭 **Mood Tags:** Tag secrets with #Regret, #Joy, or #Work.
+- 💖 **Encouragement:** Subtle "Hugs" instead of standard "Likes".
+
+### **Long-Term (Q4 2026)**
+- 🌍 **Geospatial Secrets:** View secrets from your city (anonymized).
+- 🕒 **Ephemeral Mode:** Secrets that vanish after 24 hours.
+
+---
+
+## 🛡️ Trust & Safety
+Even in anonymity, we maintain a standard. The backend includes **Content Filtering** hooks to prevent malicious spam or harmful content, ensuring the "Secrets" community remains a constructive space.
